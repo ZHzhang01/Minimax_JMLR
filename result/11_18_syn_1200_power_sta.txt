@@ -1,20 +1,4 @@
 === n=1200 summary (normalized: NMSE / bias^2 / var) ===
-DM             : NMSE=0.011149,  bias^2=0.002685,  var=0.008464
-IPW            : NMSE=0.044053, bias^2=0.043810, var=0.000243
-DR             : NMSE=0.005275,  bias^2=0.001743,  var=0.003531
-Linear-closed  : NMSE=0.140391, bias^2=0.138992, var=0.001399
-Plain REG      : NMSE=1.100348, bias^2=1.092491, var=0.007857
-DR (no W,Z)    : NMSE=1.098119, bias^2=1.092895, var=0.005224
-
-=== n=1200 summary (normalized: NMSE / bias^2 / var) ===
-DM             : NMSE=0.001988,  bias^2=0.000553,  var=0.001435
-IPW            : NMSE=0.022676, bias^2=0.022207, var=0.000469
-DR             : NMSE=0.000992,  bias^2=0.000571,  var=0.000421
-Linear-closed  : NMSE=0.007095, bias^2=0.006882, var=0.000213
-Plain REG      : NMSE=0.000835, bias^2=0.000212, var=0.000623
-DR (no W,Z)    : NMSE=0.000364, bias^2=0.000165, var=0.000199
-
-=== n=1200 summary (normalized: NMSE / bias^2 / var) ===
 DM             : NMSE=0.042920,  bias^2=0.042216,  var=0.000705
 IPW            : NMSE=0.044359, bias^2=0.044130, var=0.000230
 DR             : NMSE=0.006184,  bias^2=0.006066,  var=0.000118
