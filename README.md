@@ -25,7 +25,7 @@ The code reproduces the **MSE, bias, variance, point-wise estimation, confidence
 - `Background of real data.ipynb`  
   Significance and comparison analysis.
 
-- `baseline-2sls`
+- `baseline_2sls`
   2SLS baseline.
 ---
 
