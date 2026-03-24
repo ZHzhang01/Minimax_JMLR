@@ -1,10 +1,12 @@
-# Minimax_JMLR
 
 
-# Minimax Learning with Negative Controls — Experiments & Replication
+
+# Experiments
+
+# Causal Inference Under Unmeasured Confounding with Negative Controls: A Minimax Learning Approach
 
 This repository contains **simulation and real-data experiments** accompanying our work on **causal inference under unmeasured confounding using negative controls**, based on **minimax learning of bridge functions**.  
-The code reproduces the **MSE, bias, variance, point-wise estimation, confidence interval** reported in the paper, including **permutation-based robustness checks** for negative control variable selection.
+The code reproduces the **MSE, point-wise estimation, bias and variance** reported in the paper, including **permutation-based robustness checks** for negative control variable selection.
 
 ---
 
@@ -14,7 +16,7 @@ The code reproduces the **MSE, bias, variance, point-wise estimation, confidence
   Real-data experiments with **all 6 permutations** of selecting 2 negative control treatments (Z) and 2 negative control outcomes (W) from 4 candidate proxies.
 
 - `result/`  
-  Saved numerical outputs (`.txt`) for simulation experiments (power, bias, variance).
+  Saved numerical outputs (`.txt`) for simulation experiments (MSE, bias, variance).
 
 - `*_syn_*.py / *.txt`  
   Synthetic data experiments under different sample sizes (`n=400,1200`) and nonlinear transformations (`sin`, `power`).
@@ -22,10 +24,10 @@ The code reproduces the **MSE, bias, variance, point-wise estimation, confidence
 - `real_world_ex_layer_*.ipynb`  
   Neural-network–based minimax bridge function estimation on real data with different architectures.
 
-- `Background of real data.ipynb`  
-  Significance and comparison analysis.
+- `background of real data.ipynb`  
+  Significance and comparison analysis upon real data.
 
-- `baseline_2sls`
+- `baseline_2sls(moment-based)`
   2SLS baseline.
 ---
 
