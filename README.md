@@ -13,19 +13,19 @@ The code reproduces the **MSE, point-wise estimation, bias and variance** report
 ## Contents
 
 - `real_world_6_variable_permutation/`  
-  For Table 14 in our main text. Real-data experiments with **all 6 permutations** of selecting 2 negative control treatments (Z) and 2 negative control outcomes (W) from 4 candidate proxies.
+  For 🔵 **Table 14** in our main text. Real-data experiments with all II-VI permutations of selecting 2 negative control treatments (Z) and 2 negative control outcomes (W) from 4 candidate proxies.
 
 - `syn_*.py` and `result/syn_*.txt`  
-  For Table 2-7 in our main text. Synthetic data experiments (MSE, bias, variance) under different sample sizes (`n=400,1200`) and nonlinear transformations (`sin`, `power`).
+  For 🔵 **Table 2-7** in our main text. Synthetic data experiments (MSE, bias, variance) under different sample sizes (`n=400,1200`) and nonlinear transformations (`sin`, `power`).
 
 - `background of real data.ipynb`  
   Significance and comparison analysis upon real data.
 
 - `baseline_2sls(moment-based)`  
-  For Table 10 and Table 13 in our main text. 2SLS baseline.
+  For 🔵 **Table 10** and 🔵 **Table 13** in our main text. 2SLS baseline.
 
 - `real_world_ex_layer_*.ipynb`  
-  For Table 8-9 in our main text. Neural-network–based minimax bridge function estimation on real data with different architectures.
+  For 🔵 **Table 8-9** and real_world_ex_layer_4_hidden_256.ipynb contains Permutation I in 🔵 **Table 14** in our main text. Neural-network–based minimax bridge function estimation on real data with different architectures.
 
   
 ---
