@@ -108,7 +108,7 @@ The RHC data used by these analyses are frozen and compressed inside the noteboo
 
 ## Response to the reviewer
 
-> **Response:** We thank the reviewer for clarifying this concern. We agree that the proposed covariate-omission analysis is informative when it is interpreted as a stress test rather than as a formal test of proxy validity. Our previous response emphasized the identification caveat—that omitting covariates from $X$ may change the latent confounding structure for which the original $Z$ and $W$ were selected—but did not carry out the requested empirical diagnostic. We have now added this analysis.
+> **Response:** We thank the reviewer for clarifying this concern. The proposed covariate-omission analysis is informative when it is interpreted as a stress test rather than as a formal test of proxy validity. We have now added this analysis.
 >
 > Specifically, we keep the four proxy variables and their original allocation, $Z=(\texttt{pafi1},\texttt{paco21}),\qquad W=(\texttt{ph1},\texttt{hema1})$, fixed throughout the analysis. We remove complete raw-variable blocks from $X$ before imputation, dummy encoding, and standardization, and then refit every estimator from the raw data under each reduced $X$ specification. The estimator settings, sample splits, and random seeds are held fixed across omission scenarios. Thus, the reported changes are attributable to the information removed from $X$, rather than to changes in preprocessing, proxy allocation, or estimator tuning.
 >
