@@ -104,3 +104,74 @@ The RHC data used by these analyses are frozen and compressed inside the noteboo
 }
 ```
 
+
+
+## Response to the reviewer
+
+> **Response:** We thank the reviewer for clarifying this concern. We agree that the proposed covariate-omission analysis is informative when it is interpreted as a stress test rather than as a formal test of proxy validity. Our previous response emphasized the identification caveat—that omitting covariates from \(X\) may change the latent confounding structure for which the original \(Z\) and \(W\) were selected—but did not carry out the requested empirical diagnostic. We have now added this analysis.
+>
+> Specifically, we keep the four proxy variables and their original allocation,
+> \[
+> Z=(\texttt{pafi1},\texttt{paco21}),\qquad
+> W=(\texttt{ph1},\texttt{hema1}),
+> \]
+> fixed throughout the analysis. We remove complete raw-variable blocks from \(X\) before imputation, dummy encoding, and standardization, and then refit every estimator from the raw data under each reduced-\(X\) specification. The estimator settings, sample splits, and random seeds are held fixed across omission scenarios. Thus, the reported changes are attributable to the information removed from \(X\), rather than to changes in preprocessing, proxy allocation, or estimator tuning.
+>
+> We consider three complementary families of omissions.
+>
+> 1. **Proxy-safe nested omissions.** Among covariates whose conditional association with the four proxies is below the median, we rank variables by their joint treatment- and outcome-predictive strength and omit the top 1, 3, and 5 variables. The resulting sets are
+>    \[
+>    \{\texttt{dnr1}\},
+>    \]
+>    \[
+>    \{\texttt{dnr1},\texttt{ninsclas},\texttt{transhx}\},
+>    \]
+>    and
+>    \[
+>    \{\texttt{dnr1},\texttt{ninsclas},\texttt{transhx},
+>      \texttt{cat2},\texttt{urin1}\}.
+>    \]
+>    These are our primary sensitivity scenarios because they remove variables that are relevant to treatment and outcome while minimizing disruption to the empirical proxy structure.
+>
+> 2. **Strong-confounder nested omissions.** We rank all baseline covariates by joint treatment- and outcome-predictive strength and omit the top 1, 3, and 5 variables:
+>    \[
+>    \{\texttt{surv2md1}\},
+>    \]
+>    \[
+>    \{\texttt{surv2md1},\texttt{dnr1},\texttt{aps1}\},
+>    \]
+>    and
+>    \[
+>    \{\texttt{surv2md1},\texttt{dnr1},\texttt{aps1},
+>      \texttt{cat1},\texttt{ca}\}.
+>    \]
+>    These deliberately adversarial scenarios treat strongly prognostic variables as pseudo-unobserved confounders.
+>
+> 3. **Clinical-severity stress omission.** We jointly omit eight baseline severity variables:
+>    \[
+>    \{\texttt{surv2md1},\texttt{aps1},\texttt{scoma1},
+>    \texttt{meanbp1},\texttt{hrt1},\texttt{resp1},
+>    \texttt{temp1},\texttt{dnr1}\}.
+>    \]
+>
+> To quantify whether the omissions substantially alter the empirical proxy structure, we additionally report the cross-validated \(R^2\) for predicting the four proxies from the retained \(X\). It is 0.2556 with the full \(X\), and remains 0.2556, 0.2545, and 0.2520 under the three proxy-safe omissions. Thus, the primary omission sequence removes up to five raw covariates while changing proxy predictability by no more than 0.0036. In contrast, the \(R^2\) decreases to 0.2428, 0.2131, and 0.1665 under the strong-confounder omissions. We report this distinction explicitly because the latter scenarios intentionally push the analysis toward settings in which proxy informativeness may deteriorate.
+>
+> The results are presented in two tables and two corresponding coefficient plots, organized as \(X\)-omission analogues of Tables 13 and 14. In each plot, the red dashed line denotes the estimator’s full-\(X\) estimate, the black line denotes zero, and the horizontal bars are 95% confidence intervals.
+>
+> The proposed minimax DR estimators are directionally and inferentially stable throughout the analysis. Across the full-\(X\) specification and all seven omission scenarios:
+>
+> - both DR and DR(sta) produce negative point estimates in all 8 settings;
+> - all 16 corresponding 95% confidence intervals remain entirely below zero;
+> - the DR estimates range from \(-0.0774\) to \(-0.0303\), with a maximum absolute shift from the full-\(X\) estimate of 0.0245;
+> - the DR(sta) estimates range from \(-0.0793\) to \(-0.0291\), with a maximum absolute shift of 0.0258; and
+> - their standard errors remain within relatively narrow ranges: 0.0099–0.0122 for DR and 0.0104–0.0118 for DR(sta).
+>
+> The proxy-safe results are particularly relevant to the reviewer’s proposed diagnostic. After omitting one, three, and five variables, the DR estimates are \(-0.0303\), \(-0.0413\), and \(-0.0383\), respectively, and the DR(sta) estimates are \(-0.0388\), \(-0.0291\), and \(-0.0379\). Every confidence interval remains below zero. Thus, the substantive conclusion that RHC reduces 30-day survival is not driven by retaining the exact original set of 68 observed covariates.
+>
+> The contrast with the linear bridge baselines becomes pronounced under the more demanding omissions. The original linear moment-based estimator has only 4 of 8 confidence intervals entirely below zero and a maximum absolute shift of 0.6797. For example, its estimate changes from \(-0.0828\) under the full \(X\) to \(-0.7625\) with standard error 2.6770 after omitting three strong covariates, and changes sign to \(+0.0833\) after omitting five. The original linear closed-form estimator similarly has only 4 of 8 confidence intervals below zero and a maximum absolute shift of 0.4786; after the five-variable strong omission, it changes from \(-0.0860\) to \(+0.3925\), with standard error 0.8721.
+>
+> Adding interaction terms, quadratic terms, or both does not uniformly resolve this instability. Some individual linear specifications are relatively stable under the proxy-safe omissions, and we do not claim that the proposed estimator has the smallest numerical change in every individual row. Rather, the relevant distinction is uniformity: none of the linear specifications maintains the same combination of sign stability, bounded shifts, and confidence intervals below zero across the full set of omissions. This pattern is also apparent in the two coefficient plots: the proposed DR estimates remain concentrated on the negative side of zero, whereas several linear panels require much wider horizontal scales and contain sign reversals or very wide confidence intervals.
+>
+> We agree that this analysis cannot establish that the selected proxies are valid for the unknown confounders in the actual data. No observational sensitivity analysis can fully verify that identifying assumption. Accordingly, we describe these results as a stress test, not as a validation test. Nevertheless, they provide the practically useful evidence requested by the reviewer: the substantive conclusion from the proposed minimax DR estimators is robust to several reasonable reductions of \(X\), including omissions specifically designed to preserve empirical proxy predictability, and it remains stable even under substantially more adversarial omissions. At the same time, the deterioration of some linear estimators illustrates their greater dependence on a particular low-dimensional bridge specification and on well-conditioned linear moment equations.
+>
+> We have revised the manuscript to state both conclusions clearly: the omission experiment cannot prove proxy validity, but it shows that the empirical conclusion from the proposed method is not an artifact of conditioning on the exact original 68-dimensional \(X\).
