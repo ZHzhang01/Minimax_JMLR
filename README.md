@@ -21,7 +21,7 @@ Each notebook is self-contained: it includes the data-generating process or a fr
 | `Table_10.ipynb` | Table 10: linear moment-based basis sensitivity |
 | `Table_13.ipynb` | Table 13: six proxy permutations with the moment-based linear baseline |
 | `Table_14.ipynb` | Table 14: six proxy permutations with the closed-form linear baseline |
-| `Reviewer_X_Omission_Sensitivity.ipynb` | Table 15-16: Additional RHC sensitivity analysis that treats selected observed covariates as pseudo-unobserved confounders |
+| `Reviewer_X_Omission_Stress_test.ipynb` | Tables 15-16: RHC covariate-omission stress test with 28 full-$X$, nested-omission, and no-$X$ scenarios |
 
 ## Environment
 
@@ -80,7 +80,7 @@ The RHC data used by these analyses are frozen and compressed inside the noteboo
 
 ### Reviewer covariate-omission sensitivity analysis: Tables 15-16
 
-`Reviewer_X_Omission_Sensitivity.ipynb` removes observed baseline covariates from `X` and treats them as pseudo-unobserved confounders. It includes proxy-safe nested omissions, strong-confounder nested omissions, a clinical-severity stress block, diagnostics for covariate balance and overlap, and comparisons with standard unconfoundedness-based baselines.
+`Reviewer_X_Omission_Stress_test.ipynb` removes complete observed baseline-variable blocks from `X` and treats them as pseudo-unobserved confounders. The 49 meaningful raw-variable blocks are ranked in two deterministic ways: by joint treatment/outcome predictive strength and by conditional predictive strength for the four proxies. For each ranking, the notebook omits the top 1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 35, 40, and 45 blocks. A final union scenario removes all 49 blocks and leaves no observed `X`. Including the full-`X` reference, Tables 15-16 report 28 scenarios, with every estimator refitted from the raw data under the corresponding reduced covariate set.
 
 ## Reproducibility and validation
 
@@ -108,36 +108,30 @@ The RHC data used by these analyses are frozen and compressed inside the noteboo
 
 ## Response to the reviewer
 
-> **Response:** We thank the reviewer for clarifying this concern. The proposed covariate-omission analysis is informative when it is interpreted as a stress test rather than as a formal test of proxy validity. We have now added this analysis.
+> **Response:** We thank the reviewer for clarifying this concern. We agree that deliberately removing observed baseline covariates can provide a useful stress test for residual unmeasured confounding, although it should not be interpreted as a formal test of proxy validity. We have added this analysis as Tables 15-16 and two corresponding coefficient plots.
 >
-> Specifically, we keep the four proxy variables and their original allocation, $Z=(\texttt{pafi1},\texttt{paco21}),\qquad W=(\texttt{ph1},\texttt{hema1})$, fixed throughout the analysis. We remove complete raw-variable blocks from $X$ before imputation, dummy encoding, and standardization, and then refit every estimator from the raw data under each reduced $X$ specification. The estimator settings, sample splits, and random seeds are held fixed across omission scenarios. Thus, the reported changes are attributable to the information removed from $X$, rather than to changes in preprocessing, proxy allocation, or estimator tuning.
+> We keep the four proxy variables and their original allocation, $Z=(\texttt{pafi1},\texttt{paco21})$ and $W=(\texttt{ph1},\texttt{hema1})$, fixed throughout. The original covariate set contains 49 meaningful raw-variable blocks, which become 68 coordinates after one-hot encoding. We always remove all encoded columns belonging to the same raw variable, perform preprocessing under the reduced specification, and refit every estimator from the raw data. The sample split, random seed, tuning parameters, two-fold cross-fitting scheme, and 500 training epochs are held fixed across scenarios.
 >
-> We consider three complementary families of omissions.
+> To avoid relying on a hand-picked deletion set, we construct two deterministic rankings of the 49 raw-variable blocks.
 >
-> 1. **Proxy-safe nested omissions.** Among covariates whose conditional association with the four proxies is below the median, we rank variables by their joint treatment- and outcome-predictive strength and omit the top 1, 3, and 5 variables. The resulting sets are $\{\texttt{dnr1}\}$, $\{\texttt{dnr1},\texttt{ninsclas},\texttt{transhx}\}$, and $\{\texttt{dnr1},\texttt{ninsclas},\texttt{transhx},\texttt{cat2},\texttt{urin1}\}$. These are our primary sensitivity scenarios because they remove variables that are relevant to treatment and outcome while minimizing disruption to the empirical proxy structure.
+> 1. **Treatment/outcome-predictive ranking.** We fit $\ell_2$-regularized logistic regressions for treatment given $X$ and outcome given $(A,X)$. For a block with $d_j$ encoded columns, the treatment and outcome coefficient-block norms are divided by $\sqrt{d_j}$, and the block is ranked by the geometric mean of the two normalized strengths.
+> 2. **Proxy-predictive ranking.** We fit a multivariate ridge regression of the four proxies $(Z,W)$ on $X$. Each block is ranked by its coefficient-block Frobenius norm divided by $\sqrt{4d_j}$.
 >
-> 2. **Strong-confounder nested omissions.** We rank all baseline covariates by joint treatment- and outcome-predictive strength and omit the top 1, 3, and 5 variables: $\{\texttt{surv2md1}\}$, $\{\texttt{surv2md1},\texttt{dnr1},\texttt{aps1}\}$, and $\{\texttt{surv2md1},\texttt{dnr1},\texttt{aps1},\texttt{cat1},\texttt{ca}\}$. These deliberately adversarial scenarios treat strongly prognostic variables as pseudo-unobserved confounders.
+> For each ranking separately, we omit the top $k\in\{1,2,3,4,5,10,15,20,25,30,35,40,45\}$ blocks, producing two nested omission paths. We then add a final union stress test that removes the union of the two top-45 sets. The top-45 sets overlap in 41 blocks, so their union contains all 49 raw variables and leaves no observed $X$ covariates. Together with the full-$X$ reference, this gives 28 scenarios.
 >
-> 3. **Clinical-severity stress omission.** We jointly omit eight baseline severity variables: $\{\texttt{surv2md1},\texttt{aps1},\texttt{scoma1},\texttt{meanbp1},\texttt{hrt1},\texttt{resp1},\texttt{temp1},\texttt{dnr1}\}$.
+> Tables 15 and 16 use the same method panels as Tables 13 and 14, respectively. They report the proposed DR and DR(sta) estimators alongside the original linear moment-based or closed-form estimator and the corresponding interaction, quadratic, and combined basis specifications. The coefficient plots show point estimates and 95% confidence intervals; the red dashed line is the full-$X$ estimate and the black line is zero.
 >
-> To quantify whether the omissions substantially alter the empirical proxy structure, we additionally report the cross-validated $R^2$ for predicting the four proxies from the retained $X$. It is 0.2556 with the full $X$, and remains 0.2556, 0.2545, and 0.2520 under the three proxy-safe omissions. Thus, the primary omission sequence removes up to five raw covariates while changing proxy predictability by no more than 0.0036. In contrast, the $R^2$ decreases to 0.2428, 0.2131, and 0.1665 under the strong-confounder omissions. We report this distinction explicitly because the latter scenarios intentionally push the analysis toward settings in which proxy informativeness may deteriorate.
+> The proposed minimax DR estimators are directionally and inferentially stable across the complete stress path:
 >
-> The results are presented in two tables and two corresponding coefficient plots, organized as $X$ omission analogues of Tables 13 and 14. In each plot, the red dashed line denotes the estimator’s full $X$ estimate, the black line denotes zero, and the horizontal bars are 95% confidence intervals.
+> - DR and DR(sta) have negative point estimates in all 28 scenarios;
+> - all 56 corresponding 95% confidence intervals lie entirely below zero;
+> - all 28 signs for each estimator agree with its full-$X$ sign;
+> - the DR estimates range from $-0.1019$ to $-0.0386$, with a maximum absolute shift of 0.0490 from the full-$X$ estimate;
+> - the DR(sta) estimates range from $-0.1043$ to $-0.0334$, with a maximum absolute shift of 0.0508; and
+> - their standard errors remain in the ranges 0.01064-0.01536 for DR and 0.01026-0.01322 for DR(sta).
 >
-> The proposed minimax DR estimators are directionally and inferentially stable throughout the analysis. Across the full $X$ specification and all seven omission scenarios:
+> Even in the final scenario with no observed $X$, DR is $-0.0386$ (SE 0.01322; 95% CI $[-0.0645,-0.0127]$) and DR(sta) is $-0.0392$ (SE 0.01322; 95% CI $[-0.0651,-0.0133]$). Thus, the qualitative conclusion that RHC reduces 30-day survival is not driven by retaining the original observed covariate set.
 >
-> - both DR and DR(sta) produce negative point estimates in all 8 settings;
-> - all 16 corresponding 95% confidence intervals remain entirely below zero;
-> - the DR estimates range from $-0.0774$ to $-0.0303$, with a maximum absolute shift from the full $X$ estimate of 0.0245;
-> - the DR(sta) estimates range from $-0.0793$ to $-0.0291$, with a maximum absolute shift of 0.0258; and
-> - their standard errors remain within relatively narrow ranges: 0.0099–0.0122 for DR and 0.0104–0.0118 for DR(sta).
+> The linear bridge estimators are substantially less uniform. The original moment-based estimator has only 2 of 28 confidence intervals entirely below zero and a maximum absolute shift of 0.8617. The original closed-form estimator also has only 2 of 28 confidence intervals below zero and a maximum absolute shift of 16.6000. Adding interaction terms, quadratic terms, or both does not uniformly restore sign stability, bounded shifts, and confidence intervals below zero; several scenarios instead produce sign reversals or very wide confidence intervals.
 >
-> The proxy-safe results are particularly relevant to the reviewer’s proposed diagnostic. After omitting one, three, and five variables, the DR estimates are $-0.0303$, $-0.0413$, and $-0.0383$, respectively, and the DR(sta) estimates are $-0.0388$, $-0.0291$, and $-0.0379$. Every confidence interval remains below zero. Thus, the substantive conclusion that RHC reduces 30-day survival is not driven by retaining the exact original set of 68 observed covariates.
->
-> The contrast with the linear bridge baselines becomes pronounced under the more demanding omissions. The original linear moment-based estimator has only 4 of 8 confidence intervals entirely below zero and a maximum absolute shift of 0.6797. For example, its estimate changes from $-0.0828$ under the full $X$ to $-0.7625$ with standard error 2.6770 after omitting three strong covariates, and changes sign to $+0.0833$ after omitting five. The original linear closed-form estimator similarly has only 4 of 8 confidence intervals below zero and a maximum absolute shift of 0.4786; after the five-variable strong omission, it changes from $-0.0860$ to $+0.3925$, with standard error 0.8721.
->
-> Adding interaction terms, quadratic terms, or both does not uniformly resolve this instability. Some individual linear specifications are relatively stable under the proxy-safe omissions, and we do not claim that the proposed estimator has the smallest numerical change in every individual row. Rather, the relevant distinction is uniformity: none of the linear specifications maintains the same combination of sign stability, bounded shifts, and confidence intervals below zero across the full set of omissions. This pattern is also apparent in the two coefficient plots: the proposed DR estimates remain concentrated on the negative side of zero, whereas several linear panels require much wider horizontal scales and contain sign reversals or very wide confidence intervals.
->
-> Accordingly, we describe these results as a stress test, not as a validation test. Nevertheless, they provide the practically useful evidence requested by the reviewer: the substantive conclusion from the proposed minimax DR estimators is robust to several reasonable reductions of $X$, including omissions specifically designed to preserve empirical proxy predictability, and it remains stable even under substantially more adversarial omissions. At the same time, the deterioration of some linear estimators illustrates their greater dependence on a particular low-dimensional bridge specification and on well-conditioned linear moment equations.
->
-> We have revised the manuscript to state both conclusions clearly.
+> Accordingly, we present this analysis as a severe, systematically targeted stress test rather than as a validation test. It shows that the substantive conclusion from the proposed flexible minimax DR estimators persists along both nested deletion paths and even after all observed $X$ covariates are removed, while the parametric linear alternatives are considerably more sensitive to covariate omission and basis specification. The notebook prints every ranking and omission set, refits all methods without reading cached results, and verifies the Tables 15-16 layouts and robustness counts at the end of the run.
