@@ -21,7 +21,7 @@ Each notebook is self-contained: it includes the data-generating process or a fr
 | `Table_10.ipynb` | Table 10: linear moment-based basis sensitivity |
 | `Table_13.ipynb` | Table 13: six proxy permutations with the moment-based linear baseline |
 | `Table_14.ipynb` | Table 14: six proxy permutations with the closed-form linear baseline |
-| `Reviewer_X_Omission_Sensitivity.ipynb` | Additional RHC sensitivity analysis that treats selected observed covariates as pseudo-unobserved confounders |
+| `Reviewer_X_Omission_Sensitivity.ipynb` | Table 15-16: Additional RHC sensitivity analysis that treats selected observed covariates as pseudo-unobserved confounders |
 
 ## Environment
 
