@@ -78,7 +78,7 @@ Table 8 compares neural minimax DR estimators with linear closed-form and moment
 
 The RHC data used by these analyses are frozen and compressed inside the notebooks, so no external data download or project-local data path is required.
 
-### Reviewer covariate-omission sensitivity analysis
+### Reviewer covariate-omission sensitivity analysis: Tables 15-16
 
 `Reviewer_X_Omission_Sensitivity.ipynb` removes observed baseline covariates from `X` and treats them as pseudo-unobserved confounders. It includes proxy-safe nested omissions, strong-confounder nested omissions, a clinical-severity stress block, diagnostics for covariate balance and overlap, and comparisons with standard unconfoundedness-based baselines.
 
