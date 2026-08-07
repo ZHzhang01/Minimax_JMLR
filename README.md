@@ -105,33 +105,3 @@ The RHC data used by these analyses are frozen and compressed inside the noteboo
 ```
 
 
-
-## Response to the reviewer
-
-> **Response:** We thank the reviewer for clarifying this concern. We agree that deliberately removing observed baseline covariates can provide a useful stress test for residual unmeasured confounding, although it should not be interpreted as a formal test of proxy validity. We have added this analysis as Tables 15-16 and two corresponding coefficient plots.
->
-> We keep the four proxy variables and their original allocation, $Z=(\texttt{pafi1},\texttt{paco21})$ and $W=(\texttt{ph1},\texttt{hema1})$, fixed throughout. The original covariate set contains 49 meaningful raw-variable blocks, which become 68 coordinates after one-hot encoding. We always remove all encoded columns belonging to the same raw variable, perform preprocessing under the reduced specification, and refit every estimator from the raw data. The sample split, random seed, tuning parameters, two-fold cross-fitting scheme, and 500 training epochs are held fixed across scenarios.
->
-> To avoid relying on a hand-picked deletion set, we construct two deterministic rankings of the 49 raw-variable blocks.
->
-> 1. **Treatment/outcome-predictive ranking.** We fit $\ell_2$-regularized logistic regressions for treatment given $X$ and outcome given $(A,X)$. For a block with $d_j$ encoded columns, the treatment and outcome coefficient-block norms are divided by $\sqrt{d_j}$, and the block is ranked by the geometric mean of the two normalized strengths.
-> 2. **Proxy-predictive ranking.** We fit a multivariate ridge regression of the four proxies $(Z,W)$ on $X$. Each block is ranked by its coefficient-block Frobenius norm divided by $\sqrt{4d_j}$.
->
-> For each ranking separately, we omit the top $k\in\{1,2,3,4,5,10,15,20,25,30,35,40,45\}$ blocks, producing two nested omission paths. We then add a final union stress test that removes the union of the two top-45 sets. The top-45 sets overlap in 41 blocks, so their union contains all 49 raw variables and leaves no observed $X$ covariates. Together with the full-$X$ reference, this gives 28 scenarios.
->
-> Tables 15 and 16 use the same method panels as Tables 13 and 14, respectively. They report the proposed DR and DR(sta) estimators alongside the original linear moment-based or closed-form estimator and the corresponding interaction, quadratic, and combined basis specifications. The coefficient plots show point estimates and 95% confidence intervals; the red dashed line is the full-$X$ estimate and the black line is zero.
->
-> The proposed minimax DR estimators are directionally and inferentially stable across the complete stress path:
->
-> - DR and DR(sta) have negative point estimates in all 28 scenarios;
-> - all 56 corresponding 95% confidence intervals lie entirely below zero;
-> - all 28 signs for each estimator agree with its full-$X$ sign;
-> - the DR estimates range from $-0.1019$ to $-0.0386$, with a maximum absolute shift of 0.0490 from the full-$X$ estimate;
-> - the DR(sta) estimates range from $-0.1043$ to $-0.0334$, with a maximum absolute shift of 0.0508; and
-> - their standard errors remain in the ranges 0.01064-0.01536 for DR and 0.01026-0.01322 for DR(sta).
->
-> Even in the final scenario with no observed $X$, DR is $-0.0386$ (SE 0.01322; 95% CI $[-0.0645,-0.0127]$) and DR(sta) is $-0.0392$ (SE 0.01322; 95% CI $[-0.0651,-0.0133]$). Thus, the qualitative conclusion that RHC reduces 30-day survival is not driven by retaining the original observed covariate set.
->
-> The linear bridge estimators are substantially less uniform. The original moment-based estimator has only 2 of 28 confidence intervals entirely below zero and a maximum absolute shift of 0.8617. The original closed-form estimator also has only 2 of 28 confidence intervals below zero and a maximum absolute shift of 16.6000. Adding interaction terms, quadratic terms, or both does not uniformly restore sign stability, bounded shifts, and confidence intervals below zero; several scenarios instead produce sign reversals or very wide confidence intervals.
->
-> Accordingly, we present this analysis as a severe, systematically targeted stress test rather than as a validation test. It shows that the substantive conclusion from the proposed flexible minimax DR estimators persists along both nested deletion paths and even after all observed $X$ covariates are removed, while the parametric linear alternatives are considerably more sensitive to covariate omission and basis specification. The notebook prints every ranking and omission set, refits all methods without reading cached results, and verifies the Tables 15-16 layouts and robustness counts at the end of the run.
